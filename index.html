@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crave – Food Delivery</title>
+    <meta name="description" content="Crave - Order delicious food from your favorite restaurants">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- ========== AUTH MODAL ========== -->
+    <div id="auth-overlay" class="modal-overlay">
+        <div class="modal" id="auth-modal">
+            <!-- Login Form -->
+            <div id="login-form" class="auth-form">
+                <button class="modal-close" id="close-auth-btn">&times;</button>
+                <div class="auth-brand">
+                    <div class="auth-logo">🍔</div>
+                    <h2>Welcome Back</h2>
+                    <p>Sign in to continue ordering</p>
+                </div>
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="login-password" placeholder="Enter your password"
+                            autocomplete="current-password">
+                        <button type="button" class="toggle-pwd" data-target="login-password">👁</button>
+                    </div>
+                </div>
+                <div id="login-error" class="auth-error hidden"></div>
+                <button id="login-submit-btn" class="btn btn-primary btn-block">Sign In</button>
+                <p class="auth-switch">Don't have an account? <span id="go-register">Register</span></p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form" class="auth-form hidden">
+                <button class="modal-close" id="close-auth-btn-2">&times;</button>
+                <div class="auth-brand">
+                    <div class="auth-logo">🍕</div>
+                    <h2>Create Account</h2>
+                    <p>Join Crave and start ordering</p>
+                </div>
+                <div class="form-group">
+                    <label for="reg-name">Full Name</label>
+                    <input type="text" id="reg-name" placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email</label>
+                    <input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="reg-password" placeholder="Min. 6 characters"
+                            autocomplete="new-password">
+                        <button type="button" class="toggle-pwd" data-target="reg-password">👁</button>
+                    </div>
+                </div>
+                <div id="register-error" class="auth-error hidden"></div>
+                <div id="register-success" class="auth-success hidden"></div>
+                <button id="register-submit-btn" class="btn btn-primary btn-block">Create Account</button>
+                <p class="auth-switch">Already a member? <span id="go-login">Sign In</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== NAVBAR ========== -->
+    <header>
+        <div class="navbar container">
+            <div class="logo" id="home-btn" title="Go Home">
+                <span class="logo-icon">🍔</span>
+                <h1>Crave</h1>
+            </div>
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="search-input" placeholder="Search restaurants or cuisines…">
+            </div>
+            <div class="nav-actions">
+                <!-- Auth button (shown when logged out) -->
+                <button class="btn btn-outline-primary" id="nav-login-btn">Sign In</button>
+                <!-- User menu (shown when logged in) -->
+                <div class="user-menu hidden" id="user-menu">
+                    <div class="user-avatar" id="user-avatar">👤</div>
+                    <span id="user-name-display">User</span>
+                    <button class="btn btn-ghost" id="logout-btn">Logout</button>
+                </div>
+                <!-- Cart -->
+                <div class="cart-icon" id="cart-toggle-btn" title="View Cart">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1" />
+                        <circle cx="20" cy="21" r="1" />
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                    </svg>
+                    <span id="cart-badge" class="hidden">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========== MAIN ========== -->
+    <main class="container">
+
+        <!-- Hero Banner -->
+        <section id="hero-section" class="hero">
+            <div class="hero-content">
+                <h2>Hungry? <span>We got you.</span></h2>
+                <p>Order from top-rated restaurants and get it delivered fast.</p>
+            </div>
+            <div class="hero-emoji">🛵</div>
+        </section>
+
+        <!-- Restaurants Section -->
+        <section id="restaurants-section">
+            <h2 class="section-title">Popular Places</h2>
+            <div class="grid" id="restaurants-grid"></div>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu-section" class="hidden">
+            <button id="back-btn" class="btn btn-outline">← Back</button>
+            <div id="restaurant-header"></div>
+            <h2 class="section-title">Menu</h2>
+            <div class="grid" id="menu-grid"></div>
+        </section>
+
+    </main>
+
+    <!-- ========== CART SIDEBAR ========== -->
+    <div id="cart-sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <div>
+                <h2>Your Cart 🛒</h2>
+                <p id="cart-restaurant-label" class="cart-subtitle"></p>
+            </div>
+            <button id="close-cart-btn" class="btn-icon" aria-label="Close cart">&times;</button>
+        </div>
+
+        <!-- Empty State -->
+        <div id="cart-empty" class="cart-empty">
+            <div class="cart-empty-icon">🛒</div>
+            <h3>Your cart is empty</h3>
+            <p>Add items from a restaurant to get started.</p>
+            <button class="btn btn-primary" id="browse-btn">Browse Restaurants</button>
+        </div>
+
+        <!-- Cart Items List -->
+        <div id="cart-items" class="cart-items hidden"></div>
+
+        <!-- Bill Summary -->
+        <div id="cart-footer" class="sidebar-footer hidden">
+            <div class="bill-details">
+                <div class="bill-row">
+                    <span>Subtotal</span>
+                    <span id="cart-subtotal">$0.00</span>
+                </div>
+                <div class="bill-row promo-row hidden" id="promo-row">
+                    <span class="promo-label">🎉 Promo – CRAVE10</span>
+                    <span id="cart-discount" class="discount-text">-$0.00</span>
+                </div>
+                <div class="bill-row">
+                    <span>Delivery Fee</span>
+                    <span id="cart-delivery">$0.00</span>
+                </div>
+                <div class="bill-row">
+                    <span>Taxes & Fees (8%)</span>
+                    <span id="cart-tax">$0.00</span>
+                </div>
+            </div>
+
+            <!-- Promo Code -->
+            <div class="promo-input-row">
+                <input type="text" id="promo-code-input" placeholder="Promo code (CRAVE10)">
+                <button id="apply-promo-btn" class="btn btn-outline">Apply</button>
+            </div>
+            <div id="promo-msg" class="promo-msg hidden"></div>
+
+            <div class="total-row">
+                <span>Total</span>
+                <span id="cart-total">$0.00</span>
+            </div>
+            <button class="btn btn-primary btn-block" id="checkout-btn">Review Order →</button>
+            <button class="btn btn-ghost btn-block" id="clear-cart-btn">Clear Cart</button>
+        </div>
+    </div>
+    <div id="sidebar-overlay"></div>
+
+    <!-- ========== ORDER REVIEW MODAL ========== -->
+    <div id="order-overlay" class="modal-overlay">
+        <div class="modal order-modal" id="order-modal">
+            <button class="modal-close" id="close-order-btn">&times;</button>
+            <h2 class="order-modal-title">📋 Review Your Order</h2>
+
+            <!-- Items Summary -->
+            <div class="order-items-list" id="order-items-list"></div>
+
+            <!-- Bill Recap -->
+            <div class="order-bill-recap" id="order-bill-recap"></div>
+
+            <!-- Delivery Details -->
+            <div class="order-section">
+                <h3 class="order-section-label">🏠 Delivery Address</h3>
+                <div class="form-group">
+                    <input type="text" id="order-address" placeholder="123 Main St, Apartment 4B">
+                </div>
+                <div class="order-address-row">
+                    <div class="form-group">
+                        <input type="text" id="order-city" placeholder="City">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="order-zip" placeholder="ZIP Code">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="order-section">
+                <h3 class="order-section-label">💳 Payment Method</h3>
+                <div class="payment-options">
+                    <label class="payment-option" id="pay-cod">
+                        <input type="radio" name="payment" value="cod" checked>
+                        <span class="pay-icon">💵</span>
+                        <span>Cash on Delivery</span>
+                    </label>
+                    <label class="payment-option" id="pay-card">
+                        <input type="radio" name="payment" value="card">
+                        <span class="pay-icon">💳</span>
+                        <span>Credit / Debit Card</span>
+                    </label>
+                    <label class="payment-option" id="pay-upi">
+                        <input type="radio" name="payment" value="upi">
+                        <span class="pay-icon">📱</span>
+                        <span>UPI / Wallet</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="order-error" class="auth-error hidden"></div>
+
+            <button class="btn btn-primary btn-block" id="place-order-btn"
+                style="margin-top:6px;font-size:16px;padding:16px;">🛵 Place Order</button>
+        </div>
+    </div>
+
+    <!-- ========== ORDER CONFIRMATION ========== -->
+    <div id="confirm-overlay" class="confirm-overlay hidden">
+        <div class="confirm-box">
+            <div class="confirm-checkmark" id="confirm-checkmark">✓</div>
+            <h2 id="confirm-title">Order Placed!</h2>
+            <p id="confirm-msg">Your delicious food is on its way 🛵</p>
+            <div class="confirm-details" id="confirm-details"></div>
+            <div class="confirm-eta">
+                <span class="eta-icon">🕐</span>
+                <span id="confirm-eta-text">Estimated delivery: <strong>30–45 min</strong></span>
+            </div>
+            <div class="confirm-steps">
+                <div class="step active" id="step1"><span>✅</span> Order Received</div>
+                <div class="step" id="step2"><span>👨‍🍳</span> Preparing</div>
+                <div class="step" id="step3"><span>🛵</span> On the Way</div>
+                <div class="step" id="step4"><span>📦</span> Delivered</div>
+            </div>
+            <button class="btn btn-primary" id="confirm-close-btn" style="margin-top:28px;padding:12px 36px">
+                Back to Menu
+            </button>
+        </div>
+    </div>
+
+    <!-- ========== TOAST ========== -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
